@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Decode - Steganografi Web</title>
+  <!-- Tambahkan referensi Bootstrap di sini -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+    /* Merubah latar belakang halaman menjadi warna #FFFCFC dengan transparansi 20% */
+    body {
+      background-color: rgba(255, 252, 252, 0.2); /* Warna dengan transparansi */
+      color: #000; /* Warna teks sesuai preferensi Anda */
+    }
+
+    /* CSS untuk garis putus-putus pada input file */
+    .custom-file-input {
+      background-color: #D9D9D9; /* Warna latar belakang */
+      border: 2px dashed #000; /* Garis putus-putus berwarna hitam */
+      border-radius: 5px; /* Sudut elemen dibulatkan */
+      padding: 10px; /* Padding agar ada ruang di dalam elemen */
+      cursor: pointer; /* Ubah kursor saat di atas elemen */
+    }
+
+    .custom-file-input:hover {
+      border-color: #007bff; /* Ubah warna garis tepi saat elemen dihover */
+    }
+  </style>
+  <script>
+    function decode() {
+        var imageInput = document.getElementById('imageInput').files[0];
+    
+        var formData = new FormData();
+        formData.append('image', imageInput);
+    
+        fetch('http://localhost:5000/extract_message', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('messageInput').value = data.extracted_message;
+            document.getElementById('decodeResult').innerHTML = 'Dekoding berhasil dilakukan.';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
+    
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="btn-group d-flex" role="group">
+            <a type="button" class="btn btn-success" style="background-color: #4B55FF; border-color: #4B55FF; flex: 1;" href="encode.html" target="contentFrame">Encode</a>
+            <a class="btn btn-primary" style="background-color: #0F1CF3; border-color: #0F1CF3; flex: 1;" href="decode.html" target="contentFrame">Decode</a>
+        </div>
+      </div>
+    </div>
+    <form class="mt-3 text-center">
+      <div class="form-group rounded" style="margin-top: 10px; padding: 10px; background-color: #D9D9D9;">
+            <label for="imageInput">Upload Gambar</label>
+            <input type="file" class="form-control-file border border-dark border-dashed" id="imageInput" accept="image/*">
+        </div>     
+      <div class="form-group" style="margin-top: 10px;">
+        <button type="button" class="btn btn-primary" onclick="decode()" style="margin-top: 10px;">Decode</button>
+      </div>
+      <div class="form-group">
+        <label for="messageInput">Hasil Pesan Rahasia:</label>
+        <textarea class="form-control" id="messageInput" rows="4" readonly></textarea>
+      </div>
+    </form>
+    <div class="mt-3" id="decodeResult"></div> 
+</body>
+</html>
